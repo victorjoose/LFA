@@ -12,6 +12,7 @@ fita = ""
 
 if __name__ == "__main__":
 
+
     estados = input("Digite os estado separados por vírgula: ").split(",")
     alfabeto = input("Digite o alfabeto separados por vírgula: ").split(",")
     estado_inicial = input("Digite o estado inicial separado por vírgula: ").split(",")
