@@ -94,15 +94,10 @@ def imprime_resultado_afn(fita, estado_atual, estados_finais):
 
 if __name__ == "__main__":
 
-    # estados = input("Digite os estado separados por vírgula: ").split(",")
-    estados = ["s0", "s1", "s2"]
-    # alfabeto = input("Digite o alfabeto separados por vírgula: ").split(",")
-    alfabeto = ["0", "1"]
-
-    # estado_inicial = popula_estado_inicial("", estados, False, True)
-    estado_inicial = "s0"
-    # estados_finais = popula_estado_final([], estados, False, True)
-    estados_finais = ["s0"]
+    estados = input("Digite os estado separados por vírgula: ").split(",")
+    alfabeto = input("Digite o alfabeto separados por vírgula: ").split(",")
+    estado_inicial = popula_estado_inicial("", estados, False, True)
+    estados_finais = popula_estado_final([], estados, False, True)
 
     print("Digite o estado destino para o seguinte estado: (Digite - (hífen) para cancelar a ligação)")
 
@@ -124,7 +119,7 @@ if __name__ == "__main__":
             else:
                 funcao_programa[(estado, letra)] = dest
 
-    fita = input("Digite uma palavra para verificar se ela está contida no automato: ")
+    fita = input("Digite uma palavra para verificar se ela está contida no autômato: ")
 
     estado_atual = estado_inicial
 
