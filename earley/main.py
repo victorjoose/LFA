@@ -2,22 +2,22 @@ from earley import Earley
 
 
 def test():
-    """
-    grammar = {
-        'S': [['NP', 'VP'], ['Aux', 'NP', 'VP'], ['VP']],
-        'NP': [['Det', 'Nominal'], ['Proper-Noun']],
-        'Nominal': [['Noun'], ['Noun', 'Nominal']],
-        'VP': [['Verb'], ['Verb', 'NP']],
-        'Det': ['that', 'this', 'a'],
-        'Noun': ['book', 'flight', 'meal', 'money'],
-        'Verb': ['book', 'include', 'prever'],
-        'Aux': ['does'],
-        'Prep': ['from', 'to', 'on'],
-        'Proper-Noun': ['Houston', 'TWA']
-    }
-    terminals = ['Det', 'Noun', 'Verb', 'Aux', 'Prep', 'Proper-Noun']
-    earley = Earley(['book', 'that', 'flight'], grammar, terminals)
-    """
+
+    # grammar = {
+    #     'S': [['NP', 'VP'], ['Aux', 'NP', 'VP'], ['VP']],
+    #     'NP': [['Det', 'Nominal'], ['Proper-Noun']],
+    #     'Nominal': [['Noun'], ['Noun', 'Nominal']],
+    #     'VP': [['Verb'], ['Verb', 'NP']],
+    #     'Det': ['that', 'this', 'a'],
+    #     'Noun': ['book', 'flight', 'meal', 'money'],
+    #     'Verb': ['book', 'include', 'prever'],
+    #     'Aux': ['does'],
+    #     'Prep': ['from', 'to', 'on'],
+    #     'Proper-Noun': ['Houston', 'TWA']
+    # }
+    # terminals = ['Det', 'Noun', 'Verb', 'Aux', 'Prep', 'Proper-Noun']
+    # earley = Earley(['book', 'that', 'flight'], grammar, terminals)
+
 
     grammar = {
         'S': [['NP', 'VP'], ['auxiliar', 'NP', 'VP'], ['VP']],

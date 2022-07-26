@@ -1,6 +1,6 @@
 class State(object):
-    def __init__(self, label, regras, dot_idx, comeco_indice, final_indice, idx, receptor, produtor):
-        self.rotulo = label
+    def __init__(self, rotulo, regras, dot_idx, comeco_indice, final_indice, idx, receptor, produtor):
+        self.rotulo = rotulo
         self.regras = regras
         self.dot_idx = dot_idx
         self.comeco_indice = comeco_indice
@@ -18,8 +18,8 @@ class State(object):
         return len(self.regras) == self.dot_idx
 
     def __eq__(self, other):
-        return (self.rotulo == other.label and
-                self.regras == other.rules and
+        return (self.rotulo == other.rotulo and
+                self.regras == other.regras and
                 self.dot_idx == other.dot_idx and
                 self.comeco_indice == other.comeco_indice and
                 self.final_indice == other.final_indice)
@@ -28,10 +28,10 @@ class State(object):
         regra_s = ''
         for i, rule in enumerate(self.regras):
             if i == self.dot_idx:
-                regra_s += '\\PONTO '
+                regra_s += '.'
             regra_s += rule + ' '
         if self.dot_idx == len(self.regras):
-            regra_s += '\\PONTO'
+            regra_s += '.'
 
         index = self.index
         rotulo = self.rotulo
@@ -41,4 +41,4 @@ class State(object):
         receptor = self.receptor
         produtor = self.produtor
 
-        return 'S%d %s -> %s [%d, %d] %s %s' % (index, rotulo, regra_s, comeco_indice, final_indice, receptor, produtor)
+        return '%s -> %s' % (rotulo, regra_s)
