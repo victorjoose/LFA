@@ -28,22 +28,20 @@ class Earley:
     def predictor(self, state):
         for production in self.grammar[state.next()]:
             self.enqueue(
-                State(state.next(), production, 0, state.final_indice, state.final_indice, self.get_new_id(), [], 'predictor'), state.final_indice)
+                State(state.next(), production, 0, state.final_indice, state.final_indice, self.get_new_id()), state.final_indice)
 
     def scanner(self, state):
         if self.words[state.final_indice] in self.grammar[state.next()]:
             self.enqueue(
-                State(state.next(), [self.words[state.final_indice]], 1, state.final_indice, state.final_indice + 1, self.get_new_id(),
-                      [], 'scanner'), state.final_indice + 1)
+                State(state.next(), [self.words[state.final_indice]], 1, state.final_indice, state.final_indice + 1, self.get_new_id()), state.final_indice + 1)
 
     def completer(self, state):
         for s in self.chart[state.comeco_indice]:
-            if not s.complete() and s.next() == state.rotulo and s.final_indice == state.comeco_indice and s.rotulo != 'gamma':
-                self.enqueue(State(s.rotulo, s.regras, s.dot_idx + 1, s.comeco_indice, state.final_indice, self.get_new_id(),
-                                   s.receptor + [state.index], 'completer'), state.final_indice)
+            if not s.complete() and s.next() == state.rotulo and s.final_indice == state.comeco_indice and s.rotulo != 'Início':
+                self.enqueue(State(s.rotulo, s.regras, s.dot_idx + 1, s.comeco_indice, state.final_indice, self.get_new_id()), state.final_indice)
 
     def parse(self):
-        self.enqueue(State('gamma', ['S'], 0, 0, 0, self.get_new_id(), [], 'dummy start state'), 0)
+        self.enqueue(State('Início', ['S'], 0, 0, 0, self.get_new_id()), 0)
 
         for i in range(len(self.words) + 1):
             for state in self.chart[i]:
@@ -56,7 +54,6 @@ class Earley:
 
     def __str__(self):
         res = ''
-
         for i, chart in enumerate(self.chart):
             res += '\nD%d\n' % i
             for state in chart:

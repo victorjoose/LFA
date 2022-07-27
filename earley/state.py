@@ -1,13 +1,11 @@
 class State(object):
-    def __init__(self, rotulo, regras, dot_idx, comeco_indice, final_indice, idx, receptor, produtor):
+    def __init__(self, rotulo, regras, dot_idx, comeco_indice, final_indice, idx):
         self.rotulo = rotulo
         self.regras = regras
         self.dot_idx = dot_idx
         self.comeco_indice = comeco_indice
         self.final_indice = final_indice
         self.index = idx
-        self.receptor = receptor
-        self.produtor = produtor
 
     def next(self):
         """Returns the tag after the dot"""
@@ -33,12 +31,7 @@ class State(object):
         if self.dot_idx == len(self.regras):
             regra_s += '.'
 
-        index = self.index
         rotulo = self.rotulo
         regra_s = regra_s
-        comeco_indice = self.comeco_indice
-        final_indice = self.final_indice
-        receptor = self.receptor
-        produtor = self.produtor
 
         return '%s -> %s' % (rotulo, regra_s)
