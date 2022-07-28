@@ -1,19 +1,46 @@
-def exemplo():
-    gram = {
-        'S': [['E'], ['E', '+', 'T']],
-        'E': [['a', 'JK'], ['substantivo']],
+def gramatica_pre_definida():
+    P = {
+        'S': [['NP', 'VP'], ['Aux', 'NP', 'VP'], ['VP']],
+        'NP': [['Det', 'Nominal'], ['Proper-Noun']],
+        'Nominal': [['Noun'], ['Noun', 'Nominal']],
+        'VP': [['Verb'], ['Verb', 'NP']],
+
+        'Det': ['that', 'this', 'a'],
+        'Noun': ['book', 'flight', 'meal', 'money'],
+        'Verb': ['book', 'include', 'prever'],
+        'Aux': ['does'],
+        'Prep': ['from', 'to', 'on'],
+        'Proper-Noun': ['Houston', 'TWA']
     }
 
-    gramatica = {
-        'S': [['NP', 'VP'], ['auxiliar', 'NP', 'VP'], ['VP']],
-        'NP': [['a', 'JK'], ['substantivo']],
-        'JK': [['b'], ['b', 'JK']],
-        'VP': [['c'], ['c', 'NP']],
-        'a': ['Z', 'aa', 'a'],
-        'b': ['X', 'Y', 'bb', 'cc'],
-        'c': ['X', 'dd', 'ee'],
-        'auxiliar': ['ff'],
-        'd': ['gg', 'to', 'on'],
-        'substantivo': ['hh', 'TT']
-    }
-    terminais = ['a', 'b', 'c', 'auxiliar', 'd', 'substantivo']
+    gramatica = [
+        ['E', ['G', '+', 'H']],
+        ['G', ['H']],
+        ['H', ['I', '*', 'J']],
+        ['I', ['F']],
+        ['F', ['(', 'E', ')']],
+        ['J', ['x']],
+
+        ['(', '/'],
+        [')', '/'],
+        ['*', '/'],
+        ['+', '/'],
+        ['x', '/'],
+    ]
+    return gramatica
+
+
+def terminais_pre_definidos():
+    terminais = ['Det', 'Noun', 'Verb', 'Aux', 'Prep', 'Proper-Noun']
+    terminais = ['(', ')', '*', '+', 'x']
+
+    return terminais
+
+
+def palavra_inicial():
+    return 'E'
+
+
+def variaveis_nao_terminais():
+    nao_terminais = ['E', 'F', 'T']
+    return nao_terminais
