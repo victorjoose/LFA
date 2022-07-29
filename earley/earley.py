@@ -1,58 +1,71 @@
-# construcao do D0
-def D0(V, P, S):
-    D0 = []
+CRED = '\033[91m'
+CGREEN = '\33[32m'
+CEND = '\033[0m'
+
+
+def Dzero(V, P, S):
+    Dzero = []
 
     for regra in P:
         if regra[0] == S:
-            D0.append([S, ['.'] + regra[1] + ['/', 0]])  # (1)
+            # Parte 1
+            Dzero.append([S, ['.'] + regra[1] + ['/', 0]])
 
     count = 0
     incluidos = [S]
 
     while True:
-        estado = D0[count][1][1]  # (2)
+        # Parte 2
+        estado = Dzero[count][1][1]
 
         if estado in V and estado not in incluidos:
             for regra in P:
                 if regra[0] == estado:
-                    D0.append([estado, ['.'] + regra[1] + ['/', 0]])
+                    Dzero.append([estado, ['.'] + regra[1] + ['/', 0]])
             incluidos.append(estado)
         count += 1
 
-        if count == len(D0):
+        if count == len(Dzero):
             break
-    print(f'D0 =')
 
-    for regra in D0:
+    print(f'D0:')
+
+    for regra in Dzero:
         print(regra)
+
+    return Dzero
 
 
 # Construcao dos Dr's
-def DRs(V, P, S):
-    w = input('Digite a palavra a ser processada:')
-    D = []
-    D.append(D0)
+def DRs(V, P, S, Dzero, palavra):
     tempP = P
-    for r in range(1, len(w) + 1):
-        simbolo = w[r - 1]
+    D = [Dzero]
+
+    for r in range(1, len(palavra) + 1):
+        simbolo = palavra[r - 1]
         D.append([])
         print('')
-        print(f'D[{r}] =')
+        print(f'D{r}: ')
 
         for k in D[r - 1]:
             if simbolo in k[1]:
                 posicao_ponto = k[1].index('.')
-                if k[1][posicao_ponto + 1] == simbolo:  # processa .(simbolo) em D[r-1]
+
+                # processa .(simbolo) em D[r-1]
+                if k[1][posicao_ponto + 1] == simbolo:
                     copia = k[1].copy()
                     copia[posicao_ponto], copia[posicao_ponto + 1] = copia[posicao_ponto + 1], copia[posicao_ponto]
                     D[r].append([k[0], copia])
                     print(f'{D[r][-1]}')
 
-        print('-----------------------------------')
+        print('\n\n')
 
-        for k in D[r]:  # (3)
+        # Parte 3
+        for k in D[r]:
             posicao_ponto = k[1].index('.')
-            B = k[1][posicao_ponto + 1]  # processa .(variavel). As variaveis estao em V
+
+            # processa .(variavel). As variaveis estao em V
+            B = k[1][posicao_ponto + 1]
             flagP = False
             if B in V:
                 A = k[0]
@@ -67,8 +80,8 @@ def DRs(V, P, S):
                         D[r].append([B, novo])
                         flagP = j.copy()
                         print(f'{D[r][-1]}')
-
-        for k in D[r]:  # (4)
+        # Parte 4
+        for k in D[r]:
             tempP = P.copy()
             posicao_ponto = k[1].index('.')
             if k[1][posicao_ponto + 1] == '/':
@@ -91,6 +104,6 @@ def avalia_palavra(D, S):
             reconhece = True
     print()
     if reconhece:
-        print('### Palavra reconhecida ###')
+        print(CGREEN + 'A palavra foi reconhecida' + CEND)
     else:
-        print('### Palavra NÃO reconhecida ###')
+        print(CRED + 'A palavra NÃO foi reconhecida' + CEND)

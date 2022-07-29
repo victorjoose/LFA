@@ -3,6 +3,8 @@ import vtps_pre_definido
 
 CRED = '\033[91m'
 CEND = '\033[0m'
+CYELLOW = '\33[33m'
+
 
 def test():
     global gramatica, terminais, variavel_inicial
@@ -10,7 +12,9 @@ def test():
     gramatica = []
     palavra_inicial = ''
 
-    escolha = input(CRED + "\n\nPor favor, escolha entre digitar uma gramática (1) ou utilizar uma gramática pré-definida (2)?\n" + CEND)
+    escolha = input(
+        CRED + "\n\n\tPor favor, escolha entre digitar uma gramática (1) ou utilizar uma gramática pré-definida (2)?\n\n" + CEND
+    )
 
     if escolha.isdigit():
         if int(escolha) == 1:
@@ -27,8 +31,10 @@ def test():
     else:
         valor_invalido()
 
-    earley.D0(variaveis_nao_terminais, gramatica, palavra_inicial)
-    earley.DRs(variaveis_nao_terminais, gramatica, palavra_inicial)
+    D0 = earley.Dzero(variaveis_nao_terminais, gramatica, palavra_inicial)
+    palavra = input("\n\nDigite a " + CYELLOW + "palavra" + CEND +" que deseja verificar: \n\n")
+    print("\tVerificando a palavra: " + CYELLOW + palavra + CEND + "\n")
+    earley.DRs(variaveis_nao_terminais, gramatica, palavra_inicial, D0, palavra)
 
 
 def criar_gramatica():
@@ -100,11 +106,12 @@ def get_variavel_inicial(V):
         if i in V:
             return i
         else:
-            print("Variável inicial bão está nas variáveis digitadas anteriormente, por favor, digite uma nova variável.")
+            print(
+                CRED + "Variável inicial não está nas variáveis digitadas anteriormente, por favor, digite uma nova variável." + CEND)
 
 
 def escolhe_inicial(gramatica):
-    variavel_inicial = input("Digite a variável inicial: ")
+    variavel_inicial = input(CRED + "Digite a variável inicial: " + CEND)
     inicial_valida = ''
 
     for g in gramatica:
@@ -118,19 +125,23 @@ def escolhe_inicial(gramatica):
 
 
 def imprimeVTPS(variaveis_nao_terminais, variaveis_terminais, gramatica, palavra_inicial):
-    print(f"\tV = {variaveis_nao_terminais}")
-    print(f"\tT = {variaveis_terminais}")
-    print(f"\tP = {gramatica}")
-    print(f"\tS = {palavra_inicial}")
-
-
-def valor_invalido():
-    print(CRED + "\nValor inválido!!!!!\n" + CEND)
-    test()
+    print(
+        CRED +
+        f"\n\n\tV = {variaveis_nao_terminais}\n" +
+        f"\tT = {variaveis_terminais}\n" +
+        f"\tP = {gramatica}\n" +
+        f"\tS = {palavra_inicial}\n\n"
+        + CEND
+    )
 
 
 def remove_espacos(regra_crua):
     return regra_crua.replace(" ", "", -1)
+
+
+def valor_invalido():
+    print(CRED + "\nValor inválido!!!!!\nPor favor, digite um valor válido!!!\n." + CEND)
+    test()
 
 
 if __name__ == '__main__':
