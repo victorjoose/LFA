@@ -31,12 +31,13 @@ def Dzero(V, P, S):
     print(f'D0:')
 
     for regra in Dzero:
-        print(regra)
+        r1 = regra[0]
+        r2 = listToString(regra[1])
+        print(r1 + " -> " + r2)
 
     return Dzero
 
 
-# Construcao dos Dr's
 def DRs(V, P, S, Dzero, palavra):
     tempP = P
     D = [Dzero]
@@ -51,20 +52,20 @@ def DRs(V, P, S, Dzero, palavra):
             if simbolo in k[1]:
                 posicao_ponto = k[1].index('.')
 
-                # processa .(simbolo) em D[r-1]
                 if k[1][posicao_ponto + 1] == simbolo:
                     copia = k[1].copy()
                     copia[posicao_ponto], copia[posicao_ponto + 1] = copia[posicao_ponto + 1], copia[posicao_ponto]
                     D[r].append([k[0], copia])
-                    print(f'{D[r][-1]}')
+
+                    r1 = D[r][-1][0]
+                    r2 = listToString(D[r][-1][1])
+                    print(r1 + " -> " + r2)
 
         print('\n\n')
 
         # Parte 3
         for k in D[r]:
             posicao_ponto = k[1].index('.')
-
-            # processa .(variavel). As variaveis estao em V
             B = k[1][posicao_ponto + 1]
             flagP = False
             if B in V:
@@ -79,7 +80,10 @@ def DRs(V, P, S, Dzero, palavra):
                         novo = novo + ['/', r]
                         D[r].append([B, novo])
                         flagP = j.copy()
-                        print(f'{D[r][-1]}')
+
+                        r1 = D[r][-1][0]
+                        r2 = listToString(D[r][-1][1])
+                        print(r1 + " -> " + r2)
         # Parte 4
         for k in D[r]:
             tempP = P.copy()
@@ -88,16 +92,19 @@ def DRs(V, P, S, Dzero, palavra):
                 A, s = k[0], k[1][-1]
                 for j in D[s]:
                     posicao_ponto = j[1].index('.')
-                    if j[1][posicao_ponto + 1] == A:  # processa .(A) em D[s]
+
+                    if j[1][posicao_ponto + 1] == A:
                         copia = j[1].copy()
                         copia[posicao_ponto], copia[posicao_ponto + 1] = copia[posicao_ponto + 1], copia[posicao_ponto]
                         D[r].append([j[0], copia])
-                        print(f'{D[r][-1]}')
-        avalia_palavra(D, S)
+
+                        r1 = D[r][-1][0]
+                        r2 = listToString(D[r][-1][1])
+                        print(r1 + " -> " + r2)
+        verifica_palavra(D, S)
 
 
-def avalia_palavra(D, S):
-    # avaliar se a palavra é reconhecida pela gramatica
+def verifica_palavra(D, S):
     reconhece = False
     for k in D[-1]:
         if k[0] == S and k[1][-3] == '.' and k[1][-2] == '/' and k[1][-1] == 0:
@@ -107,3 +114,12 @@ def avalia_palavra(D, S):
         print(CGREEN + 'A palavra foi reconhecida' + CEND)
     else:
         print(CRED + 'A palavra NÃO foi reconhecida' + CEND)
+
+
+def listToString(ls):
+    string = ""
+    for i in ls:
+        if type(i) == int:
+            i = str(i)
+        string += i
+    return string

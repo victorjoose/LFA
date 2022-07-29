@@ -59,9 +59,9 @@ def criar_gramatica():
         regra = trata_epsilon(regra)
         regra = list(regra)
 
-        primeira = regra.pop(0)
+        var_inicial = regra.pop(0)
 
-        V = set(primeira).union(V)
+        V = set(var_inicial).union(V)
 
         for letra in regra:
             if letra.isalpha():
@@ -72,7 +72,7 @@ def criar_gramatica():
             else:
                 T = set(letra).union(T)
 
-        P.append([primeira, regra])
+        P.append([var_inicial, regra])
 
     S = get_variavel_inicial(V)
 
@@ -106,8 +106,7 @@ def get_variavel_inicial(V):
         if i in V:
             return i
         else:
-            print(
-                CRED + "Variável inicial não está nas variáveis digitadas anteriormente, por favor, digite uma nova variável." + CEND)
+            print(CRED + "Variável inicial não está nas variáveis digitadas anteriormente, por favor, digite uma nova variável." + CEND)
 
 
 def escolhe_inicial(gramatica):
