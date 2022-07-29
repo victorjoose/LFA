@@ -1,83 +1,76 @@
-from earley import Earley
-from entrada import Entrada
-import exemplo
+import earley
+import vtps_pre_definido
 
 CRED = '\033[91m'
 CEND = '\033[0m'
 
-
 def test():
     global gramatica, terminais, variavel_inicial
-    palavra = ''
+    variaveis_nao_terminais = {}
+    gramatica = []
+    palavra_inicial = ''
 
-    escolha = input("Por favor, escolha entre digitar uma gramática (1) ou utilizar uma gramática pré-definida (2)?")
+    escolha = input(CRED + "\n\nPor favor, escolha entre digitar uma gramática (1) ou utilizar uma gramática pré-definida (2)?\n" + CEND)
 
     if escolha.isdigit():
         if int(escolha) == 1:
-            gramatica_nao_tratada = criar_gramatica(True)
-            gramatica_sem_terminais = tratar_regras(gramatica_nao_tratada)
-            terminais = cria_terminais(gramatica_nao_tratada)
-            gramatica = adiciona_terminais(gramatica_sem_terminais, terminais)
-            variavel_inicial = escolhe_inicial(gramatica_nao_tratada)
+            variaveis_nao_terminais, variaveis_terminais, gramatica, palavra_inicial = criar_gramatica()
+            imprimeVTPS(variaveis_nao_terminais, variaveis_terminais, gramatica, palavra_inicial)
         elif int(escolha) == 2:
-            gramatica = tratar_regras(exemplo.gramatica_pre_definida())
-            #gramatica = exemplo.gramatica_pre_definida()
-            terminais = exemplo.terminais_pre_definidos()
-            variavel_inicial = exemplo.palavra_inicial()
+            variaveis_nao_terminais = vtps_pre_definido.variaveis_nao_terminais_pre_definida()
+            variaveis_terminais = vtps_pre_definido.terminais_pre_definidos()
+            gramatica = vtps_pre_definido.gramatica_pre_definida()
+            palavra_inicial = vtps_pre_definido.palavra_inicial_pre_definida()
+            imprimeVTPS(variaveis_nao_terminais, variaveis_terminais, gramatica, palavra_inicial)
         else:
             valor_invalido()
     else:
         valor_invalido()
 
-    palavra = ['flight']
-    palavra = escolhe_palavra()
-
-    earley = Earley(palavra, gramatica, terminais, variavel_inicial)
-
-    earley.parse()
-    print(earley)
+    earley.D0(variaveis_nao_terminais, gramatica, palavra_inicial)
+    earley.DRs(variaveis_nao_terminais, gramatica, palavra_inicial)
 
 
-def criar_gramatica(digitando):
-    regras = []
+def criar_gramatica():
+    print(CRED + "\nO formato de entrada deve ser A->Bc. \n\n($ pra finalizar)(% = épsilon)\n" + CEND)
 
-    print(CRED + "\n\nSe digitar uma variável repetida, ela será subtituida!!" + CEND)
-    print(CRED + "\nO formato de entrada deve ser A->Bc. \n\n($ pra finalizar)\n" + CEND)
+    V = {}
+    T = {}
+    P = []
 
-    while digitando is True:
-        regraCrua = input("Digite uma regra: ")
+    while True:
+        regra_crua = input("Digite uma regra: ($ para finalizar)")
 
-        if verfica_cifrao(regraCrua) and len(regras) == 0:
-            print("\n\n\tGramática vazia, por favor digite uma gramática não vazia\n\n")
-        elif verfica_cifrao(regraCrua) is True and len(regras) > 0:
-            digitando = False
+        if verfica_cifrao(regra_crua):
+            break
 
-        if not verfica_cifrao(regraCrua):
-            if "->" not in regraCrua and digitando is True:
-                formato_invalido(digitando)
-            regra = processaGramatica(regraCrua)
-            regras.append(regra)
+        regra = remove_espacos(regra_crua)
 
-    return regras
+        if verifica_flecha(regra):
+            continue
 
+        regra = remove_flecha(regra)
+        regra = trata_epsilon(regra)
+        regra = list(regra)
 
-def processaGramatica(regraCrua):
-    regraCrua = regraCrua.split("->")
+        primeira = regra.pop(0)
 
-    if len(regraCrua) != 2:
-        formato_invalido(True)
+        V = set(primeira).union(V)
 
-    regra = []
+        for letra in regra:
+            if letra.isalpha():
+                if letra.isupper():
+                    V = set(letra).union(V)
+                else:
+                    T = set(letra).union(T)
+            else:
+                T = set(letra).union(T)
 
-    for reg in regraCrua:
-        r = reg.replace(' ', '')
-        regra.append(r)
+        P.append([primeira, regra])
 
-    variavel_nao_terminal = regra[0]
-    variaveis = regra[1]
-    lsVariaveis = list(variaveis)
-    regra = [variavel_nao_terminal, lsVariaveis]
-    return regra
+    S = get_variavel_inicial(V)
+
+    return V, T, P, S
 
 
 def verfica_cifrao(entrada):
@@ -87,36 +80,27 @@ def verfica_cifrao(entrada):
         return False
 
 
-def formato_invalido(digitando):
-    print("Formato inválido, por favor, digite um formato válido")
-    criar_gramatica(digitando)
+def trata_epsilon(regra):
+    return regra.replace("%", "", -1)
 
 
-def tratar_regras(regras):
-    regras_tratadas = {}
+def verifica_flecha(regra):
+    if (regra[1] + regra[2]) != "->":
+        print(CRED + "Formato inválido, por favor, digite novamente.\n" + CEND)
+        return True
 
-    for r in regras:
-        if r[1][0].islower() is True:
-            regras_tratadas[r[0]] = r[1]
+
+def remove_flecha(regra):
+    return regra.replace("->", "", -1)
+
+
+def get_variavel_inicial(V):
+    while True:
+        i = input("Digite a variável inicial: ")
+        if i in V:
+            return i
         else:
-            regras_tratadas[r[0]] = [r[1]]
-
-    return regras_tratadas
-
-
-def cria_terminais(gramatica):
-    terminais = []
-
-    for gram in gramatica:
-        if len(gram[1]) >= 2:
-            terminal = gram[1][1]
-        else:
-            terminal = gram[1][0]
-
-        if terminal not in terminais:
-            terminais.append(terminal)
-
-    return terminais
+            print("Variável inicial bão está nas variáveis digitadas anteriormente, por favor, digite uma nova variável.")
 
 
 def escolhe_inicial(gramatica):
@@ -133,31 +117,20 @@ def escolhe_inicial(gramatica):
         escolhe_inicial(gramatica)
 
 
-def escolhe_palavra():
-    palavra_array = []
-    palavra = input("\nDigite a palavra a ser analisada: ")
-
-    if isinstance(palavra, str):
-        for p in palavra:
-            palavra_array.append(p)
-        return palavra_array
-    else:
-        print("Palavra inválida")
-        escolhe_palavra()
-
-
-def adiciona_terminais(gramatica_sem_terminais, terminais):
-    gramatica = gramatica_sem_terminais
-
-    gramatica[terminais]
-
-    return gramatica
-
+def imprimeVTPS(variaveis_nao_terminais, variaveis_terminais, gramatica, palavra_inicial):
+    print(f"\tV = {variaveis_nao_terminais}")
+    print(f"\tT = {variaveis_terminais}")
+    print(f"\tP = {gramatica}")
+    print(f"\tS = {palavra_inicial}")
 
 
 def valor_invalido():
     print(CRED + "\nValor inválido!!!!!\n" + CEND)
     test()
+
+
+def remove_espacos(regra_crua):
+    return regra_crua.replace(" ", "", -1)
 
 
 if __name__ == '__main__':
